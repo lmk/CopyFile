@@ -1,0 +1,10 @@
+CopyFile/Debug/
+CopyFile/Release/
+ipch/
+*.sdf
+Debug/
+Release/
+*.suo
+*.aps
+*.user
+*.filters
