@@ -1,93 +1,25 @@
-================================================================================
-    MFC ¶óÀÌºê·¯¸® : CopyFile ÇÁ·ÎÁ§Æ® °³¿ä
-================================================================================
+CopyFile
+-----------
 
-ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç¿¡¼­ ÀÌ CopyFile ÀÀ¿ë ÇÁ·Î±×·¥À» 
-¸¸µé¾ú½À´Ï´Ù. ÀÌ ÀÀ¿ë ÇÁ·Î±×·¥Àº MFCÀÇ ±âº» »ç¿ë¹ýÀ» º¸¿© ÁÙ »Ó¸¸ ¾Æ´Ï¶ó ÀÀ¿ë 
-ÇÁ·Î±×·¥ÀÛ¼ºÀ» À§ÇÑ ±âº» ±¸Á¶¸¦ Á¦°øÇÕ´Ï´Ù.
+* Dialog baseì˜ íŒŒì¼ì„ copy í•˜ëŠ” í”„ë¡œê·¸ëž¨ ìž…ë‹ˆë‹¤.
+* ê²½ë¡œ ëª©ë¡ì„ csv í˜•íƒœë¡œ ì½ì–´ì„œ ì—¬ëŸ¬ê²½ë¡œì˜ íŒŒì¼ì„ ì¼ê´„ì ìœ¼ë¡œ copy í• ìˆ˜ë„ ìžˆìŠµë‹ˆë‹¤.
+* ì¼ë°˜ì ì¸ copy í”„ë¡œê·¸ëž¨ê³¼ëŠ” ë‹¬ë¦¬, **ëŒ€ìƒ ê²½ë¡œì— íŒŒì¼ì´ ìžˆì–´ì•¼ ë®ì–´ ì”ë‹ˆë‹¤.**
+* ì›ë³¸ê²½ë¡œì—ëŠ” íŒŒì¼ì´ ìžˆì§€ë§Œ, ëŒ€ìƒê²½ë¡œì— íŒŒì¼ì´ ì—†ìœ¼ë©´ íŒŒì¼ì„ copy í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
+* csv íŒŒì¼ì˜ í¬ë©§ì€ ì»´ë§ˆ(,)ë¡œ êµ¬ë¶„ë˜ë©° ì•„ëž˜ í•„ë“œë¡œ êµ¬ì„±ë©ë‹ˆë‹¤.
+    * ì œëª©: ë¡œê·¸ì— ì¶œë ¥í•  ë¬¸ìžì—´
+    * ì›ë³¸ê²½ë¡œ
+    * ëŒ€ìƒê²½ë¡œ
+* ì˜ˆì œ íŒŒì¼
 
-ÀÌ ÆÄÀÏ¿¡´Â CopyFile ÀÀ¿ë ÇÁ·Î±×·¥À» ±¸¼ºÇÏ´Â °¢ ÆÄÀÏ¿¡ ´ëÇÑ
-¿ä¾à ¼³¸íÀÌ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.
-
-CopyFile.vcxproj
-    ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç¸¦ »ç¿ëÇÏ¿© »ý¼ºµÈ VC++ ÇÁ·ÎÁ§Æ®ÀÇ ÁÖ ÇÁ·ÎÁ§Æ® ÆÄÀÏÀÔ´Ï´Ù. 
-    ÆÄÀÏÀ» »ý¼ºÇÑ Visual C++ ¹öÀü¿¡ ´ëÇÑ Á¤º¸¿Í ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç¸¦ »ç¿ëÇÏ¿© ¼±ÅÃÇÑ 
-    ÇÃ·§Æû, ±¸¼º ¹× ÇÁ·ÎÁ§Æ® ±â´É¿¡ ´ëÇÑ Á¤º¸°¡ µé¾î ÀÖ½À´Ï´Ù.
-
-CopyFile.vcxproj.filters
-    ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç¸¦ »ç¿ëÇÏ¿© »ý¼ºµÈ VC++ ÇÁ·ÎÁ§Æ®ÀÇ ÇÊÅÍ ÆÄÀÏÀÔ´Ï´Ù. 
-    ÀÌ ÆÄÀÏ¿¡´Â ÇÁ·ÎÁ§Æ®ÀÇ ÆÄÀÏ°ú ÇÊÅÍ °£ÀÇ ¿¬°á Á¤º¸°¡ µé¾î ÀÖ½À´Ï´Ù. ÀÌ·¯ÇÑ 
-    ¿¬°áÀº Æ¯Á¤ ³ëµå¿¡¼­ À¯»çÇÑ È®Àå¸íÀ¸·Î ±×·ìÈ­µÈ ÆÄÀÏÀ» Ç¥½ÃÇÏ±â À§ÇØ 
-    IDE¿¡¼­ »ç¿ëµË´Ï´Ù. ¿¹¸¦ µé¾î ".cpp" ÆÄÀÏÀº "¼Ò½º ÆÄÀÏ" ÇÊÅÍ¿Í ¿¬°áµÇ¾î 
-    ÀÖ½À´Ï´Ù.
-
-
-CopyFile.h
-    ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ±âº» Çì´õ ÆÄÀÏÀÔ´Ï´Ù. ¿©±â¿¡´Â ´Ù¸¥ ÇÁ·ÎÁ§Æ® °ü·Ã
-    Çì´õ(Resource.h Æ÷ÇÔ)°¡ µé¾î ÀÖ°í CCopyFileApp ÀÀ¿ë ÇÁ·Î±×·¥
-    Å¬·¡½º¸¦ ¼±¾ðÇÕ´Ï´Ù.
-
-CopyFile.cpp
-    ÀÀ¿ë ÇÁ·Î±×·¥ Å¬·¡½º CCopyFileAppÀÌ(°¡) µé¾î ÀÖ´Â ±âº» ÀÀ¿ë ÇÁ·Î±×·¥
-    ¼Ò½º ÆÄÀÏÀÔ´Ï´Ù.
-
-CopyFile.rc
-    ÇÁ·Î±×·¥¿¡¼­ »ç¿ëÇÏ´Â ¸ðµç Microsoft Windows ¸®¼Ò½ºÀÇ ¸ñ·ÏÀÔ´Ï´Ù.
- ¿©±â¿¡´Â RES ÇÏÀ§ µð·ºÅÍ¸®¿¡ ÀúÀåµÈ ¾ÆÀÌÄÜ, ºñÆ®¸Ê ¹× Ä¿¼­°¡
-    Æ÷ÇÔµË´Ï´Ù. ÀÌ ÆÄÀÏÀº Microsoft Visual C++¿¡¼­ Á÷Á¢
-    ÆíÁýÇÒ ¼ö ÀÖ½À´Ï´Ù. ÇÁ·ÎÁ§Æ® ¸®¼Ò½º´Â 1042¿¡ ÀÖ½À´Ï´Ù.
-
-res\CopyFile.ico
-    ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ¾ÆÀÌÄÜÀ¸·Î »ç¿ëµÇ´Â ¾ÆÀÌÄÜ ÆÄÀÏÀÔ´Ï´Ù. ÀÌ ¾ÆÀÌÄÜÀº
-    ÁÖ ¸®¼Ò½º ÆÄÀÏÀÎ CopyFile.rc¿¡ ÀÇÇØ Æ÷ÇÔµË´Ï´Ù.
-
-res\CopyFile.rc2
-    ÀÌ ÆÄÀÏ¿¡´Â Microsoft Visual C++ ÀÌ¿ÜÀÇ ´Ù¸¥ µµ±¸¿¡¼­ ÆíÁýÇÑ ¸®¼Ò½º°¡ 
-    µé¾î ÀÖ½À´Ï´Ù. ¸®¼Ò½º ÆíÁý±â·Î ÆíÁýÇÒ ¼ö ¾ø´Â ¸ðµç ¸®¼Ò½º´Â
-    ÀÌ ÆÄÀÏ¿¡ ³Ö¾î¾ß ÇÕ´Ï´Ù.
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç¿¡¼­ ÇÏ³ªÀÇ ´ëÈ­ »óÀÚ Å¬·¡½º°¡ ¸¸µé¾îÁý´Ï´Ù.
-
-CopyFileDlg.h, CopyFileDlg.cpp - ´ëÈ­ »óÀÚ
-    ÀÌ ÆÄÀÏ¿¡´Â CCopyFileDlg Å¬·¡½º°¡ µé¾î ÀÖ½À´Ï´Ù. ÀÌ Å¬·¡½º´Â
-    ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ÁÖ ´ëÈ­ »óÀÚ µ¿ÀÛÀ» Á¤ÀÇÇÕ´Ï´Ù. ´ëÈ­ »óÀÚÀÇ ÅÛÇÃ¸´Àº
-    Microsoft Visual C++¿¡¼­ ÆíÁýÇÒ ¼ö ÀÖ´Â CopyFile.rc¿¡ ÀÖ½À´Ï´Ù.
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-±âÅ¸ Ç¥ÁØ ÆÄÀÏ:
-
-StdAfx.h, StdAfx.cpp
-    ÀÌ ÆÄÀÏÀº ¹Ì¸® ÄÄÆÄÀÏµÈ Çì´õ ÆÄÀÏ(PCH)ÀÎ CopyFile.pch¿Í
-    ¹Ì¸® ÄÄÆÄÀÏµÈ Çü½Ä ÆÄÀÏÀÎ StdAfx.obj¸¦ ºôµåÇÏ´Â µ¥ »ç¿ëµË´Ï´Ù.
-
-Resource.h
-    »õ ¸®¼Ò½º ID¸¦ Á¤ÀÇÇÏ´Â Ç¥ÁØ Çì´õ ÆÄÀÏÀÔ´Ï´Ù.
-    Microsoft Visual C++¿¡¼­ ÀÌ ÆÄÀÏÀ» ÀÐ°í ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
-
-CopyFile.manifest
-	ÀÀ¿ë ÇÁ·Î±×·¥ ¸Å´ÏÆä½ºÆ® ÆÄÀÏÀº Windows XP¿¡¼­ Æ¯Á¤ ¹öÀüÀÇ Side-by-Side 
-	¾î¼Àºí¸®¿¡ ´ëÇÑ ÀÀ¿ë ÇÁ·Î±×·¥ Á¾¼Ó¼ºÀ» ¼³¸íÇÏ´Â µ¥ »ç¿ëµË´Ï´Ù. ·Î´õ´Â ÀÌ Á¤º¸¸¦ 
-	»ç¿ëÇÏ¿© ¾î¼Àºí¸® Ä³½Ã¿¡¼­ ÀûÀýÇÑ ¾î¼Àºí¸®¸¦ ·ÎµåÇÏ°Å³ª ÀÀ¿ë ÇÁ·Î±×·¥¿¡¼­ Àü¿ë 
-	¾î¼Àºí¸®¸¦ ·ÎµåÇÕ´Ï´Ù. ÀÀ¿ë ÇÁ·Î±×·¥ ¸Å´ÏÆä½ºÆ®´Â ÀÀ¿ë ÇÁ·Î±×·¥ ½ÇÇà ÆÄÀÏ°ú °°Àº 
-	Æú´õ¿¡ ¼³Ä¡µÈ ¿ÜºÎ .manifest ÆÄÀÏ·Î Àç¹èÆ÷¸¦ À§ÇØ Æ÷ÇÔµÇ°Å³ª ¸®¼Ò½ºÀÇ ÇüÅÂ·Î 
-	½ÇÇà ÆÄÀÏ¿¡ Æ÷ÇÔµÉ ¼ö ÀÖ½À´Ï´Ù. 
-/////////////////////////////////////////////////////////////////////////////
-
-±âÅ¸ Âü°í:
-
-ÀÀ¿ë ÇÁ·Î±×·¥ ¸¶¹ý»ç´Â "TODO:"¸¦ »ç¿ëÇÏ¿© Ãß°¡ÇÏ°Å³ª »ç¿ëÀÚ ÁöÁ¤ÇØ¾ß ÇÏ´Â
-¼Ò½º ÄÚµå ºÎºÐÀ» ³ªÅ¸³À´Ï´Ù.
-
-ÀÀ¿ë ÇÁ·Î±×·¥ÀÌ °øÀ¯ DLL¿¡¼­ MFC¸¦ »ç¿ëÇÏ´Â °æ¿ì ÇØ´ç MFC DLLÀ» 
-Àç¹èÆ÷ÇØ¾ß ÇÕ´Ï´Ù. ±×¸®°í ÀÀ¿ë ÇÁ·Î±×·¥ÀÌ ¿î¿µ Ã¼Á¦ÀÇ ·ÎÄ¶°ú 
-´Ù¸¥ ¾ð¾î¸¦ »ç¿ëÇÏ´Â °æ¿ì ÇØ´ç Áö¿ªÈ­µÈ ¸®¼Ò½ºÀÎ MFC100XXX.DLLÀ» 
-Àç¹èÆ÷ÇØ¾ß ÇÕ´Ï´Ù. ÀÌ µÎ°¡Áö Ç×¸ñ¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ³»¿ëÀº 
-MSDN ¼³¸í¼­ÀÇ Visual C++ ÀÀ¿ë ÇÁ·Î±×·¥ Àç¹èÆ÷ Ç×¸ñÀ» 
-ÂüÁ¶ÇÏ½Ê½Ã¿À.
-
-/////////////////////////////////////////////////////////////////////////////
+```
+x86_sdk,D:\Source\MyApp\Release,D:\Destination\binary\binary\sdk\bin
+x86_sdk,D:\Source\MyApp\Release,D:\Destination\binary\binary\sdk\com
+x64_sdk,D:\Source\MyApp\x64\Release,D:\Destination\binary\binary\sdk\bin\x64
+x64_sdk,D:\Source\MyApp\x64\Release,D:\Destination\binary\binary\sdk\com\x64
+x86_app,D:\Source\MyApp\Release,D:\Destination\binary\binary\x86
+x64_app,D:\Source\MyApp\x64\Release,D:\Destination\binary\binary\x64
+x86_app,D:\Source\MyApp\Release for VIRDI,D:\Destination\binary\binary\x86_app
+x64_app,D:\Source\MyApp\x64\Release for VIRDI,D:\Destination\binary\binary\x64_app
+x86_setupdll,D:\Source\MyApp\Release,D:\Destination\binary\common\dll
+language,D:\Source\MyApp\Lang,D:\Destination\binary\common\lang
+```

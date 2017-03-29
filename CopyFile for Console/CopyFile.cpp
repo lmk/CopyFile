@@ -51,7 +51,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 				_tprintf(TEXT("\n"));
 				_tprintf(TEXT("Used>\n"));
-				_tprintf(TEXT("> $s [option]\n"), argv[0]);
+				_tprintf(TEXT("> %s [option]\n"), argv[0]);
 				_tprintf(TEXT("\n[option]\n"));
 				_tprintf(TEXT("\t-c : config file\n"));
 				_tprintf(TEXT("\t-l : log file\n"));
