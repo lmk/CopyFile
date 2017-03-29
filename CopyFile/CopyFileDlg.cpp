@@ -80,6 +80,11 @@ BOOL CCopyFileDlg::OnInitDialog()
 
 	// 시스템 메뉴에 "정보..." 메뉴 항목을 추가합니다.
 
+	if ( CheckCommandParameter() )
+	{
+		exit(0);
+	}
+
 	// IDM_ABOUTBOX는 시스템 명령 범위에 있어야 합니다.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
@@ -309,12 +314,8 @@ CString CCopyFileDlg::getFileInfo(CString filePath)
     return szDate; 
 }
 
-int CCopyFileDlg::copyFileFolderToFolder(CString strTitle, CString strOrgPath, CString strDstPath)
+int CCopyFileDlg::copyFileFolderToFolder(CString strTitle, CString strOrgPath, CString strDstPath, CString &log)
 {
-    CString strLog;
-
-    GetDlgItemText(IDC_EDIT_LOG, strLog);
-
     // 원본에서 목록을 구한다.
     CStringArray listFileOrg;
     int nCountOrg = GetFileList(strOrgPath, listFileOrg);
@@ -338,7 +339,8 @@ int CCopyFileDlg::copyFileFolderToFolder(CString strTitle, CString strOrgPath, C
             {
                 srcFile.Format(TEXT("%s\\%s"), strOrgPath, listFileOrg.GetAt(o));
 
-                if ( CopyFile(srcFile, dstFile, FALSE) )
+                //if ( CopyFile(srcFile, dstFile, FALSE) )
+				if ( 1 )
                 {
                     status = 1;
                 } else 
@@ -367,10 +369,8 @@ int CCopyFileDlg::copyFileFolderToFolder(CString strTitle, CString strOrgPath, C
             break;
         }
 
-        strLog.Append(line);
+        log.Append(line);
     }
-
-    SetDlgItemText(IDC_EDIT_LOG, strLog);
 
     return listFileDst.GetCount();
 }
@@ -415,39 +415,12 @@ BOOL CCopyFileDlg::isExistDir(CString dirname)
 
 void CCopyFileDlg::OnBnClickedOk()
 {
-    SetDlgItemText(IDC_EDIT_LOG, TEXT(""));
-
+	CString strLog;
     CString strListfile;
     GetDlgItemText(IDC_EDIT_LIST, strListfile);
-    if ( isExistFile(strListfile) ) {
-        CStdioFile cf;
-        CString strLine;
-
-        cf.Open(strListfile, CFile::modeRead);
-        while(cf.ReadString(strLine))
-        {
-            CString strTitle;
-            CString strOrgPath;
-            CString strDstPath;
-
-            AfxExtractSubString(strTitle, strLine, 0, ',');
-            AfxExtractSubString(strOrgPath, strLine, 1, ',');
-            AfxExtractSubString(strDstPath, strLine, 2, ',');
-
-            strTitle.Trim();
-            strOrgPath.Trim();
-            strDstPath.Trim();
-
-            if ( strTitle.IsEmpty() || strOrgPath.IsEmpty() || strDstPath.IsEmpty() )
-            {
-                CString strLog;
-                GetDlgItemText(IDC_EDIT_LOG, strLog);
-                strLog.AppendFormat(TEXT("ERR List File\t%s,%s,%s"), strTitle, strOrgPath, strDstPath);
-                SetDlgItemText(IDC_EDIT_LOG, strLog);
-            }
-
-            copyFileFolderToFolder(strTitle, strOrgPath, strDstPath);
-        }
+    if ( isExistFile(strListfile) ) 
+	{
+		CopyFromConfig(strListfile, strLog, NULL, NULL);
     } 
     else 
     {
@@ -469,8 +442,11 @@ void CCopyFileDlg::OnBnClickedOk()
             return;
         }
 
-        copyFileFolderToFolder(NULL, strOrgPath, strDstPath);
+        copyFileFolderToFolder(NULL, strOrgPath, strDstPath, strLog);
     }
+
+	SetDlgItemText(IDC_EDIT_LOG, TEXT(""));
+	SetDlgItemText(IDC_EDIT_LOG, strLog);
 }
 
 
@@ -511,4 +487,133 @@ void CCopyFileDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.y = 580; // 세로
 
     CDialogEx::OnGetMinMaxInfo(lpMMI);
+}
+
+
+BOOL CCopyFileDlg::CheckCommandParameter()
+{
+	// 아규먼트가 없는 경우, Dialog를 띄운다.
+	if(__argc == 1) 
+		return FALSE;
+
+	CString keyConfig("-c"), keyLog("-l"), keySrc("-s"), keyDst("-d");
+	CString configFilename;
+	CString logFilename;
+	CString srcParentDir;
+	CString dstParentDir;
+	CString log;
+
+	bool isError = false;
+
+	for(int i=1; i<__argc; i++)
+	{
+		if(keyConfig.CompareNoCase(__targv[i]) == 0)
+		{
+			configFilename = __targv[++i];
+		}
+		else if(keyLog.CompareNoCase(__targv[i]) == 0)
+		{
+			logFilename = __targv[++i];
+		}
+		else if(keySrc.CompareNoCase(__targv[i]) == 0)
+		{
+			srcParentDir = __targv[++i];
+		}
+		else if(keyDst.CompareNoCase(__targv[i]) == 0)
+		{
+			dstParentDir = __targv[++i];
+		}
+		else
+		{
+			log.AppendFormat(TEXT("Unknown parameter [%s]\r\n"), __targv[i]);
+			isError = true;
+		}
+	}
+
+	if (configFilename.IsEmpty() == true && isExistFile(configFilename) == FALSE)
+	{
+		log.AppendFormat(TEXT("Config file [%s] Not found\r\n"), configFilename);
+		isError = true;
+	}
+
+
+	if ( isError == true )
+	{
+		log.AppendFormat(TEXT("\r\n"));
+		log.AppendFormat(TEXT("Used>\r\n"));
+		log.AppendFormat(TEXT("> $s [option]\r\n"), __targv[0]);
+		log.AppendFormat(TEXT("\r\n[option]\r\n"));
+		log.AppendFormat(TEXT("\t-c : config file"));
+		log.AppendFormat(TEXT("\t-l : log file"));
+		log.AppendFormat(TEXT("\t-s : source parent directory"));
+		log.AppendFormat(TEXT("\t-d : destination parent directory"));
+		log.AppendFormat(TEXT("\r\n"));
+		log.AppendFormat(TEXT("ex> %s -c list.cfg -l secure.log -s c:\\secure_bin -d d:\\secure_package\\binary"), __targv[0]);
+	}
+	else 
+	{
+		CopyFromConfig(configFilename, log, srcParentDir, dstParentDir);
+	}
+
+	if ( logFilename.IsEmpty() == false )
+	{
+		CStdioFile cf;
+
+		cf.Open(logFilename, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeReadWrite);
+		cf.WriteString(log);
+		cf.Close();
+	}
+	else
+	{
+
+	}
+
+	
+	_tprintf(log);
+
+	return TRUE;
+}
+
+void CCopyFileDlg::CopyFromConfig(CString &config, CString &log, LPCTSTR parentSrc, LPCTSTR parentDst)
+{
+    CStdioFile cf;
+    CString strLine;
+
+    cf.Open(config, CFile::modeRead);
+    while(cf.ReadString(strLine))
+    {
+        CString strTitle;
+        CString strOrgPath;
+        CString strDstPath;
+		CString strBuf;
+
+		if(strLine.TrimLeft().GetAt(0) == '#') continue;
+
+        AfxExtractSubString(strTitle, strLine, 0, ',');
+        AfxExtractSubString(strOrgPath, strLine, 1, ',');
+        AfxExtractSubString(strDstPath, strLine, 2, ',');
+
+        strTitle.Trim();
+        strOrgPath.Trim();
+        strDstPath.Trim();
+
+		if(strOrgPath.IsEmpty() == false && parentSrc!=NULL && parentSrc[0]!=NULL)
+		{
+			strBuf.Format(TEXT("%s\\%s"), parentSrc, strOrgPath);
+			strOrgPath.Format(TEXT("%s"), strBuf); 
+		}
+
+		if(strDstPath.IsEmpty() == false && parentDst!=NULL && parentDst[0]!=NULL)
+		{
+			strBuf.Format(TEXT("%s\\%s"), parentDst, strDstPath);
+			strDstPath.Format(TEXT("%s"), strBuf);
+		}
+
+        if ( strTitle.IsEmpty() || strOrgPath.IsEmpty() || strDstPath.IsEmpty() )
+        {
+            log.AppendFormat(TEXT("ERR List File\t%s,%s,%s"), strTitle, strOrgPath, strDstPath);
+        }
+
+        copyFileFolderToFolder(strTitle, strOrgPath, strDstPath, log);
+    }
 }

@@ -31,9 +31,12 @@ protected:
 
     BOOL isExistFile(CString filename);
     BOOL isExistDir(CString dirname);
-    int copyFileFolderToFolder(CString strTitle, CString strOrgPath, CString strDstPath);
+    int copyFileFolderToFolder(CString strTitle, CString strOrgPath, CString strDstPath, CString &log);
     CString FormatErrorMessage(DWORD ErrorCode);
     CString getFileInfo(CString filePath);
+
+	BOOL CheckCommandParameter();
+	void CopyFromConfig(CString &config, CString &log, LPCTSTR parentSrc, LPCTSTR parentDst);
 
 public:
     afx_msg void OnBnClickedButtonOrg();
